@@ -109,9 +109,32 @@ def answer_question(question, authors):
     response = requests.post(url, headers=headers, json=data)
     return response.json()['output']['choices'][0]['text']
 
+def generate_quotes(authors):
+    authors_str = ", ".join(authors)
+    prompt = f"""
+    Genera citas relevantes y representativas de las obras de los siguientes autores de la Escuela de Salamanca: {authors_str}.
+    Para cada autor, proporciona al menos una cita directa de sus obras, incluyendo la fuente específica (título de la obra y, si es posible, la página o sección).
+    Si hay citas en latín, inclúyelas junto con su traducción al español.
+    Asegúrate de que las citas reflejen los temas principales o las contribuciones más significativas de cada autor a la Escuela de Salamanca.
+    """
+    
+    url = "https://api.together.xyz/inference"
+    headers = {
+        "Authorization": f"Bearer {together_api_key}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "model": "togethercomputer/llama-2-70b-chat",
+        "prompt": prompt,
+        "max_tokens": 2000,
+        "temperature": 0.3
+    }
+    response = requests.post(url, headers=headers, json=data)
+    return response.json()['output']['choices'][0]['text']
+
 st.title("Escuela de Salamanca: Herramientas de Investigación")
 
-tab1, tab2, tab3 = st.tabs(["Generador de Tesis", "Generador de Tabla de Contenidos", "Preguntas a Autores"])
+tab1, tab2, tab3, tab4 = st.tabs(["Generador de Tesis", "Generador de Tabla de Contenidos", "Preguntas a Autores", "Citas de Autores"])
 
 with tab1:
     st.header("Generador de Tesis")
@@ -131,12 +154,23 @@ with tab2:
 
 with tab3:
     st.header("Preguntas a Autores")
-    selected_authors = st.multiselect("Selecciona uno o varios autores:", autores)
+    selected_authors_questions = st.multiselect("Selecciona uno o varios autores:", autores, key="authors_questions")
     question = st.text_area("Tu pregunta para los autores seleccionados:")
     if st.button("Buscar Respuesta", key="search_answer"):
-        if selected_authors and question:
+        if selected_authors_questions and question:
             with st.spinner("Buscando respuesta..."):
-                answer = answer_question(question, selected_authors)
+                answer = answer_question(question, selected_authors_questions)
                 st.write(answer)
         else:
             st.warning("Por favor, selecciona al menos un autor y escribe una pregunta.")
+
+with tab4:
+    st.header("Citas de Autores")
+    selected_authors_quotes = st.multiselect("Selecciona uno o varios autores para obtener citas:", autores, key="authors_quotes")
+    if st.button("Generar Citas", key="generate_quotes"):
+        if selected_authors_quotes:
+            with st.spinner("Generando citas..."):
+                quotes = generate_quotes(selected_authors_quotes)
+                st.write(quotes)
+        else:
+            st.warning("Por favor, selecciona al menos un autor para generar citas.")
