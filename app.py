@@ -81,7 +81,7 @@ def answer_question(question, authors):
     data = {
         "model": "togethercomputer/llama-2-70b-chat",
         "prompt": prompt,
-        "max_tokens": 500,
+        "max_tokens": 2500,
         "temperature": 0.3
     }
     response = requests.post(url, headers=headers, json=data)
