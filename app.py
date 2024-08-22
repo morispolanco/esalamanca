@@ -127,7 +127,7 @@ def generate_quotes(authors, topic, num_quotes):
     data = {
         "model": "togethercomputer/llama-2-70b-chat",
         "prompt": prompt,
-        "max_tokens": 1000,
+        "max_tokens": 2000,
         "temperature": 0.3
     }
     response = requests.post(url, headers=headers, json=data)
