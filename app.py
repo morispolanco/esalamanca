@@ -137,10 +137,6 @@ st.title("Escuela de Salamanca: Herramientas de Investigación")
 
 tab1, tab2, tab3, tab4 = st.tabs(["Generador de Tesis", "Generador de Tabla de Contenidos", "Preguntas a Autores", "Citas de Autores"])
 
-st.title("Escuela de Salamanca: Herramientas de Investigación")
-
-tab1, tab2, tab3, tab4 = st.tabs(["Generador de Tesis", "Generador de Tabla de Contenidos", "Preguntas a Autores", "Citas de Autores"])
-
 with tab1:
     st.header("Generador de Tesis")
     thesis_prompt = st.text_input("Introduce un tema o concepto para generar una tesis:")
@@ -159,25 +155,25 @@ with tab2:
 
 with tab3:
     st.header("Preguntas a Autores")
-    selected_authors_questions = st.multiselect("Selecciona uno o varios autores:", autores, key="authors_questions")
-    question = st.text_area("Tu pregunta para los autores seleccionados:")
-    if st.button("Buscar Respuesta", key="search_answer"):
+    selected_authors_questions = st.multiselect("Selecciona los autores", autores)
+    question = st.text_input("Haz una pregunta a los autores seleccionados:")
+    if st.button("Responder Pregunta", key="answer_question"):
         if selected_authors_questions and question:
-            with st.spinner("Buscando respuesta..."):
+            with st.spinner("Generando respuesta..."):
                 answer = answer_question(question, selected_authors_questions)
                 st.write(answer)
         else:
-            st.warning("Por favor, selecciona al menos un autor y escribe una pregunta.")
+            st.warning("Por favor, selecciona al menos un autor y haz una pregunta.")
 
 with tab4:
     st.header("Citas de Autores")
-    selected_authors_quotes = st.multiselect("Selecciona uno o varios autores para obtener citas:", autores, key="authors_quotes")
-    quote_topic = st.text_input("Introduce el tema específico para las citas:")
-    num_quotes = st.slider("Número de citas por autor (máximo 5):", 1, 5, 3)
+    selected_authors_quotes = st.multiselect("Selecciona los autores", autores, key="quote_authors")
+    quote_topic = st.text_input("Introduce el tema para generar citas relevantes:")
+    num_quotes = st.slider("Número de citas por autor", 1, 5, 3)
     if st.button("Generar Citas", key="generate_quotes"):
         if selected_authors_quotes and quote_topic:
             with st.spinner("Generando citas..."):
                 quotes = generate_quotes(selected_authors_quotes, quote_topic, num_quotes)
                 st.write(quotes)
         else:
-            st.warning("Por favor, selecciona al menos un autor y especifica un tema para generar citas.")
+            st.warning("Por favor, selecciona al menos un autor e introduce un tema.")
