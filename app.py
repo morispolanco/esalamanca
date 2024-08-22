@@ -45,6 +45,28 @@ def generate_thesis(prompt):
     response = requests.post(url, headers=headers, json=data)
     return response.json()['output']['choices'][0]['text']
 
+def generate_table_of_contents(topic):
+    url = "https://api.together.xyz/inference"
+    headers = {
+        "Authorization": f"Bearer {together_api_key}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "model": "togethercomputer/llama-2-70b-chat",
+        "prompt": f"""Genera una tabla de contenidos detallada para una investigación sobre el siguiente tema relacionado con la Escuela de Salamanca: {topic}. 
+        La tabla de contenidos debe incluir:
+        1. Introducción
+        2. Contexto histórico
+        3. Al menos 3 capítulos principales con sus respectivos subcapítulos
+        4. Conclusión
+        5. Bibliografía
+        Asegúrate de que la estructura sea lógica y coherente, y que cubra los aspectos más relevantes del tema.""",
+        "max_tokens": 500,
+        "temperature": 0.7
+    }
+    response = requests.post(url, headers=headers, json=data)
+    return response.json()['output']['choices'][0]['text']
+
 def search_serper(query):
     url = "https://google.serper.dev/search"
     headers = {
@@ -81,15 +103,15 @@ def answer_question(question, authors):
     data = {
         "model": "togethercomputer/llama-2-70b-chat",
         "prompt": prompt,
-        "max_tokens": 2500,
+        "max_tokens": 500,
         "temperature": 0.3
     }
     response = requests.post(url, headers=headers, json=data)
     return response.json()['output']['choices'][0]['text']
 
-st.title("Escuela de Salamanca: Generador de Tesis y Preguntas a Autores")
+st.title("Escuela de Salamanca: Herramientas de Investigación")
 
-tab1, tab2 = st.tabs(["Generador de Tesis", "Preguntas a Autores"])
+tab1, tab2, tab3 = st.tabs(["Generador de Tesis", "Generador de Tabla de Contenidos", "Preguntas a Autores"])
 
 with tab1:
     st.header("Generador de Tesis")
@@ -100,6 +122,14 @@ with tab1:
             st.write(thesis)
 
 with tab2:
+    st.header("Generador de Tabla de Contenidos")
+    toc_topic = st.text_input("Introduce el tema de investigación para generar una tabla de contenidos:")
+    if st.button("Generar Tabla de Contenidos", key="generate_toc"):
+        with st.spinner("Generando tabla de contenidos..."):
+            table_of_contents = generate_table_of_contents(toc_topic)
+            st.write(table_of_contents)
+
+with tab3:
     st.header("Preguntas a Autores")
     selected_authors = st.multiselect("Selecciona uno o varios autores:", autores)
     question = st.text_area("Tu pregunta para los autores seleccionados:")
