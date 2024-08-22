@@ -94,7 +94,7 @@ tab1, tab2 = st.tabs(["Generador de Tesis", "Preguntas a Autores"])
 with tab1:
     st.header("Generador de Tesis")
     thesis_prompt = st.text_input("Introduce un tema o concepto para generar una tesis:")
-    if st.button("Generar Tesis"):
+    if st.button("Generar Tesis", key="generate_thesis"):
         with st.spinner("Generando tesis..."):
             thesis = generate_thesis(thesis_prompt)
             st.write(thesis)
@@ -103,9 +103,10 @@ with tab2:
     st.header("Preguntas a Autores")
     selected_authors = st.multiselect("Selecciona uno o varios autores:", autores)
     question = st.text_area("Tu pregunta para los autores seleccionados:")
-    if st.button("Buscar Respuesta") and selected_authors and question:
-        with st.spinner("Buscando respuesta..."):
-            answer = answer_question(question, selected_authors)
-            st.write(answer)
-    elif st.button("Buscar Respuesta"):
-        st.warning("Por favor, selecciona al menos un autor y escribe una pregunta.")
+    if st.button("Buscar Respuesta", key="search_answer"):
+        if selected_authors and question:
+            with st.spinner("Buscando respuesta..."):
+                answer = answer_question(question, selected_authors)
+                st.write(answer)
+        else:
+            st.warning("Por favor, selecciona al menos un autor y escribe una pregunta.")
