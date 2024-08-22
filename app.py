@@ -39,7 +39,7 @@ def generate_thesis(prompt):
     data = {
         "model": "togethercomputer/llama-2-70b-chat",
         "prompt": f"Genera una tesis interesante para desarrollar sobre la Escuela de Salamanca: {prompt}",
-        "max_tokens": 200,
+        "max_tokens": 2000,
         "temperature": 0.7
     }
     response = requests.post(url, headers=headers, json=data)
@@ -61,7 +61,7 @@ def generate_table_of_contents(topic):
         4. Conclusión
         5. Bibliografía
         Asegúrate de que la estructura sea lógica y coherente, y que cubra los aspectos más relevantes del tema.""",
-        "max_tokens": 500,
+        "max_tokens": 2000,
         "temperature": 0.7
     }
     response = requests.post(url, headers=headers, json=data)
@@ -103,7 +103,7 @@ def answer_question(question, authors):
     data = {
         "model": "togethercomputer/llama-2-70b-chat",
         "prompt": prompt,
-        "max_tokens": 500,
+        "max_tokens": 2000,
         "temperature": 0.3
     }
     response = requests.post(url, headers=headers, json=data)
